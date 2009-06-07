@@ -1,0 +1,229 @@
+perl -d:DProf [*.pl]
+dprofpp output
+
+// logimport
+
+Total Elapsed Time = 11.96487 Seconds
+  User+System Time = 7.014877 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 33.6   2.363  2.686  11753   0.0002 0.0002  Params::Validate::_validate
+ 6.47   0.454  2.577   3792   0.0001 0.0007  DateTime::new
+ 5.74   0.403  2.118   1896   0.0002 0.0011  DateTime::set
+ 5.27   0.370  0.462  43607   0.0000 0.0000  DateTime::__ANON__
+ 5.22   0.366  0.623   1895   0.0002 0.0003  DateTime::Duration::new
+ 4.89   0.343  6.800   1895   0.0002 0.0036  main::LineManip
+ 4.09   0.287  0.287   2087   0.0001 0.0001  DBI::db::do
+ 3.83   0.269  0.635     10   0.0269 0.0635  main::BEGIN
+ 3.76   0.264  2.363   1895   0.0001 0.0012  DateTime::from_object
+ 3.71   0.260  0.556   1896   0.0001 0.0003  DateTime::strftime
+ 3.64   0.255  0.274   2211   0.0001 0.0001  Params::Validate::_validate_pos
+ 2.95   0.207  7.322      1   0.2068 7.3217  main::File
+ 2.54   0.178  2.926   1895   0.0001 0.0015  DateTime::add_duration
+ 2.31   0.162  0.236   3794   0.0000 0.0001  DateTime::_calc_local_components
+ 2.02   0.142  0.234   1895   0.0001 0.0001  DateTime::set_time_zone
+ 
+ 	-> use DateCalc instead of DateTime module
+ Total Elapsed Time = 3.161257 Seconds
+  User+System Time = 1.051257 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 22.7   0.239  0.635     11   0.0217 0.0577  main::BEGIN
+ 13.0   0.137  0.137   2087   0.0001 0.0001  DBI::db::do
+ 7.42   0.078  0.078    379   0.0002 0.0002  Params::Validate::_validate
+ 7.32   0.077  0.116   1895   0.0000 0.0001  main::LineManip
+ 7.32   0.077  0.348      1   0.0768 0.3483  main::File
+ 4.28   0.045  0.123    377   0.0001 0.0003  DateTime::Locale::_register
+ 3.71   0.039  0.039   1895   0.0000 0.0000  Date::Calc::Add_Delta_DHMS
+ 2.85   0.030  0.213      7   0.0043 0.0304  DateTime::Locale::BEGIN
+ 2.85   0.030  0.039     13   0.0023 0.0030  DBI::BEGIN
+ 2.85   0.030  0.030     37   0.0008 0.0008  Exporter::import
+ 2.85   0.030  0.271     19   0.0016 0.0143  DateTime::BEGIN
+ 2.66   0.028  0.028    315   0.0001 0.0001  Params::Validate::_validate_pos
+ 1.71   0.018  0.042      1   0.0181 0.0425  DateTime::Locale::add_aliases
+ 0.95   0.010  0.010      1   0.0100 0.0100  DBD::mysql::db::_login
+ 0.95   0.010  0.010      1   0.0100 0.0100  AutoLoader::AUTOLOAD
+ 
+ 	-> one table way
+ 	
+Total Elapsed Time = 2.085095 Seconds
+  User+System Time = 0.645095 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 28.9   0.187  0.206   1895   0.0001 0.0001  main::LineManip
+ 23.1   0.149  0.149   1896   0.0001 0.0001  DBI::st::execute
+ 15.0   0.097  0.452      1   0.0972 0.4517  main::File
+ 12.2   0.079  0.156      8   0.0099 0.0195  main::BEGIN
+ 3.10   0.020  0.020      1   0.0200 0.0200  DBD::mysql::db::_login
+ 3.10   0.020  0.020      5   0.0040 0.0040  DBI::Const::GetInfoType::BEGIN
+ 3.10   0.020  0.039     13   0.0015 0.0030  DBI::BEGIN
+ 2.95   0.019  0.019   1895   0.0000 0.0000  Date::Calc::Add_Delta_DHMS
+ 1.55   0.010  0.010      2   0.0050 0.0050  AutoLoader::import
+ 1.55   0.010 -0.000      1   0.0100      -  Exporter::export_ok_tags
+ 1.55   0.010  0.010      7   0.0014 0.0014  vars::import
+ 1.55   0.010  0.010      2   0.0050 0.0049  DynaLoader::BEGIN
+ 1.55   0.010  0.029      1   0.0099 0.0294  DBI::install_driver
+ 1.55   0.010 -0.000      5   0.0020      -  File::Glob::AUTOLOAD
+ 1.55   0.010  0.010     10   0.0010 0.0010  Exporter::import
+
+====================================================================================================
+
+// searchdir
+
+Total Elapsed Time = 80.20034 Seconds
+  User+System Time = 45.37034 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 42.5   19.29 32.745  12560   0.0015 0.0026  DBD::_::st::fetchall_hashref
+ 23.9   10.84 10.848 861815   0.0000 0.0000  DBI::st::fetch
+ 10.7   4.858 11.779   6227   0.0008 0.0019  main::GetRes
+ 6.03   2.735  2.735  12561   0.0002 0.0002  DBI::st::execute
+ 3.96   1.797  1.797  62908   0.0000 0.0000  DBI::common::FETCH
+ 2.21   1.004  1.004   9378   0.0001 0.0001  DBI::db::do
+ 1.84   0.835  0.835  12563   0.0001 0.0001  DBI::_new_handle
+ 1.75   0.794 36.583  12560   0.0001 0.0029  DBD::_::db::selectall_hashref
+ 1.03   0.469  1.304  12561   0.0000 0.0001  DBI::_new_sth
+ 0.94   0.428  0.761  12560   0.0000 0.0001  DBD::_::st::bind_columns
+ 0.90   0.409  0.409  25122   0.0000 0.0000  DBI::common::DESTROY
+ 0.78   0.352 34.500   6333   0.0001 0.0054  main::SelDBtbl
+ 0.75   0.339  0.885   2833   0.0001 0.0003  main::Res
+ 0.74   0.334  1.862  12561   0.0000 0.0001  DBD::mysql::db::prepare
+ 0.68   0.309 33.054  12560   0.0000 0.0026  DBI::st::fetchall_hashref
+
+	-> without fetchrow_hashref
+Total Elapsed Time = 77.96625 Seconds
+  User+System Time = 38.04625 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 35.6   13.54 28.248   6333   0.0021 0.0045  main::SelDBtbl
+ 29.1   11.07 11.079 861708   0.0000 0.0000  DBI::st::fetchrow_arrayref
+ 13.7   5.239 10.117   6227   0.0008 0.0016  main::GetRes
+ 7.21   2.745  2.745  12561   0.0002 0.0002  DBI::st::execute
+ 2.82   1.074  1.074   9378   0.0001 0.0001  DBI::db::do
+ 2.33   0.885  0.885  12563   0.0001 0.0001  DBI::_new_handle
+ 1.68   0.638  1.261  12560   0.0001 0.0001  DBD::_::st::bind_columns
+ 1.08   0.409  1.294  12561   0.0000 0.0001  DBI::_new_sth
+ 0.97   0.368  0.368  50240   0.0000 0.0000  DBI::st::bind_col
+ 0.93   0.354  1.822  12561   0.0000 0.0001  DBD::mysql::db::prepare
+ 0.92   0.349  1.610  12560   0.0000 0.0001  DBI::st::bind_columns
+ 0.79   0.299  0.985   2833   0.0001 0.0003  main::Res
+ 0.76   0.289  2.112  12561   0.0000 0.0002  DBI::db::prepare
+ 0.69   0.264  0.264  12668   0.0000 0.0000  DBI::common::FETCH
+ 0.58   0.219  0.219  25122   0.0000 0.0000  DBI::common::DESTROY
+ 
+ 	-> set index on i
+
+Total Elapsed Time = 11.48650 Seconds
+  User+System Time = 3.826506 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 25.1   0.963  2.384   1337   0.0007 0.0018  main::SelDBtbl
+ 21.3   0.817  0.817  58840   0.0000 0.0000  DBI::st::fetchrow_arrayref
+ 12.9   0.494  0.494   2612   0.0002 0.0002  DBI::st::execute
+ 11.0   0.422  1.477   1274   0.0003 0.0012  main::GetRes
+ 5.93   0.227  0.227   2084   0.0001 0.0001  DBI::db::do
+ 4.02   0.154  0.154   2614   0.0001 0.0001  DBI::_new_handle
+ 3.29   0.126  0.278   2611   0.0000 0.0001  DBD::_::st::bind_columns
+ 3.24   0.124  0.124   2676   0.0000 0.0000  DBI::common::FETCH
+ 3.11   0.119  0.273   2612   0.0000 0.0001  DBI::_new_sth
+ 2.59   0.099  0.099   5224   0.0000 0.0000  DBI::common::DESTROY
+ 2.06   0.079  0.127      6   0.0132 0.0212  main::BEGIN
+ 2.06   0.079  0.201    621   0.0001 0.0003  main::Res
+ 1.67   0.064  0.064   2612   0.0000 0.0000  DBD::mysql::st::_prepare
+ 1.62   0.062  0.148    653   0.0001 0.0002  main::NoRes
+ 0.89   0.034  0.034   2612   0.0000 0.0000  DBD::_mem::common::DESTROY 	
+
+
+	-> one table way
+	
+ Total Elapsed Time = 5.852606 Seconds
+  User+System Time = 1.762606 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 33.5   0.592  1.627   1272   0.0005 0.0013  main::GetRes
+ 22.7   0.401  0.401   3230   0.0001 0.0001  DBI::st::execute
+ 7.09   0.125  0.254    623   0.0002 0.0004  main::Res
+ 4.65   0.082  0.082   1279   0.0001 0.0001  DBI::_new_handle
+ 4.37   0.077  0.119     63   0.0012 0.0019  main::SelDBtbl
+ 4.31   0.076  0.076   4079   0.0000 0.0000  DBI::st::fetchrow_arrayref
+ 3.80   0.067  0.206   1277   0.0001 0.0002  DBD::mysql::db::prepare
+ 3.12   0.055  0.137   1277   0.0000 0.0001  DBI::_new_sth
+ 2.95   0.052  0.052   1272   0.0000 0.0000  main::DelItem
+ 2.78   0.049  0.117      7   0.0070 0.0167  main::BEGIN
+ 1.99   0.035  0.035   2546   0.0000 0.0000  DBI::common::DESTROY
+ 1.82   0.032  0.032   1337   0.0000 0.0000  DBI::common::FETCH
+ 1.70   0.030  0.030   6675   0.0000 0.0000  DBI::st::bind_col
+ 1.70   0.030  0.049     13   0.0023 0.0038  DBI::BEGIN
+ 1.59   0.028  0.131    649   0.0000 0.0002  main::NoRes
+
+
+==================================================================================================== 
+ 
+ // searchres
+ 
+ Total Elapsed Time = 9.106167 Seconds
+  User+System Time = 3.736167 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 19.1   0.715  1.690   1528   0.0005 0.0011  Date::Manip::ParseDateString
+ 11.0   0.411  0.426    764   0.0005 0.0006  Date::Manip::ParseDateDelta
+ 5.59   0.209  0.596      8   0.0261 0.0745  main::BEGIN
+ 5.38   0.201  0.211   4876   0.0000 0.0000  Date::Manip::Date_Split
+ 4.60   0.172  0.172   5300   0.0000 0.0000  DBI::common::FETCH
+ 4.15   0.155  0.304   1529   0.0001 0.0002  Date::Manip::Date_DateCheck
+ 4.15   0.155  0.514   1047   0.0001 0.0005  DBD::_::st::fetchall_hashref
+ 3.61   0.135  0.157   1047   0.0001 0.0001  DBD::_::st::bind_columns
+ 3.59   0.134  0.134   1048   0.0001 0.0001  DBI::st::execute
+ 3.08   0.115  0.164   2293   0.0001 0.0001  Date::Manip::Date_TimeCheck
+ 3.05   0.114  0.114    982   0.0001 0.0001  DBI::db::do
+ 2.97   0.111  0.111  11469   0.0000 0.0000  Date::Manip::IsInt
+ 2.46   0.092  1.697    264   0.0003 0.0064  main::Res
+ 2.28   0.085  0.133    377   0.0002 0.0004  DateTime::Locale::_register
+ 1.71   0.064  0.064   1050   0.0001 0.0001  DBI::_new_handle
+
+ -> moved from DateManip to DateCalc module / hashref to arrayref
+ 
+Total Elapsed Time = 4.792356 Seconds
+  User+System Time = 1.282356 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 18.3   0.235  0.817   1047   0.0002 0.0008  main::SelArrayRef
+ 17.0   0.219  0.296      8   0.0274 0.0370  main::BEGIN
+ 12.0   0.154  0.154   1048   0.0001 0.0001  DBI::st::execute
+ 10.8   0.139  0.139   5108   0.0000 0.0000  DBI::st::fetchrow_arrayref
+ 5.30   0.068  0.068   5361   0.0000 0.0000  DBI::st::bind_col
+ 5.07   0.065  0.065    904   0.0001 0.0001  DBI::db::do
+ 4.91   0.063  0.115    225   0.0003 0.0005  main::Res
+ 4.29   0.055  0.157   1047   0.0001 0.0001  DBD::_::st::bind_columns
+ 4.21   0.054  0.054   1050   0.0001 0.0001  DBI::_new_handle
+ 3.51   0.045  0.395    391   0.0001 0.0010  main::SelDBtbl
+ 2.57   0.033  0.033   1112   0.0000 0.0000  DBI::common::FETCH
+ 2.34   0.030  0.039     13   0.0023 0.0030  DBI::BEGIN
+ 2.11   0.027  0.081   1048   0.0000 0.0001  DBI::_new_sth
+ 2.03   0.026  0.224    328   0.0001 0.0007  main::GetRfidRes
+ 1.72   0.022  0.622    328   0.0001 0.0019  main::GetRes
+
+	-> one table way
+ 
+ Total Elapsed Time = 4.658932 Seconds
+  User+System Time = 0.998931 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 29.1   0.291  0.291   1563   0.0002 0.0002  DBI::st::execute
+ 22.9   0.229  0.296      8   0.0286 0.0370  main::BEGIN
+ 9.41   0.094  0.094   2704   0.0000 0.0000  DBI::st::fetchrow_arrayref
+ 7.51   0.075  0.235    707   0.0001 0.0003  main::SelArrayRef
+ 6.21   0.062  0.192    267   0.0002 0.0007  main::Res
+ 3.40   0.034  0.034   2695   0.0000 0.0000  DBI::st::bind_col
+ 3.40   0.034  0.203    322   0.0001 0.0006  main::GetRfidRes
+ 3.20   0.032  0.066    707   0.0000 0.0001  DBI::st::bind_columns
+ 2.20   0.022  0.601    322   0.0001 0.0019  main::GetRes
+ 2.00   0.020  0.039     13   0.0015 0.0030  DBI::BEGIN
+ 1.70   0.017  0.015    267   0.0001 0.0001  main::TimeDiff
+ 1.30   0.013  0.186    322   0.0000 0.0006  main::GetDirRes
+ 1.00   0.010  0.010      1   0.0100 0.0100  DBD::mysql::db::_login
+ 1.00   0.010  0.010      4   0.0025 0.0025  Exporter::as_heavy
+ 1.00   0.010  0.010      5   0.0020 0.0020  DBI::Const::GetInfoType::BEGIN
+
+
+
