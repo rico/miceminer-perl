@@ -12,7 +12,6 @@ use DBI;
 use lib 'lib';
 use lib::DBHandler;
 use lib::DBTables;
-use lib::PerlConfig;
 use XML::Writer;
 use Data::Dumper;
 use File::Copy;
