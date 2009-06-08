@@ -293,7 +293,6 @@ sub Res {
 	
 	my $direction =  &GetDir($dataset_one, $dataset_two);
 	
-	
 	# ids/time
 	##
 	my $box = substr( $dataset_one->{'ant'}, 0, 2 );
@@ -302,7 +301,6 @@ sub Res {
 		$innerid = $dataset_two->{'id'};
 		$outerid = $dataset_one->{'id'};
 		$time = $dataset_one->{'time'};
-		
 	} else {
 		$innerid = $dataset_one->{'id'};
 		$outerid = $dataset_two->{'id'};

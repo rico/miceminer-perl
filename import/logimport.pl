@@ -403,7 +403,7 @@ sub LineManip{
 		$rfid 	=~ s/\s//g;				
 		
 		##
-		# Some special handling for the badly adressed antennas
+		# Antennas beginning with 1A are mapped to box 16, 2A to box 17 
 		$ant =~ s/1A/16/;
 		$ant =~ s/2A/17/;
 		
