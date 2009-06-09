@@ -296,11 +296,11 @@ foreach my $rfid (@RFIDS) {
 			##	
 			# case 2: The result in question overlaps just one other.
 			#
-			# We skip both results (mark them as overlap).
+			# We skip the reuslt we are working on and keep the other
 			#
 			} else {
 				$rfidresults->{ $res_sorted_key }->{'overlap'}	= 1;
-				$rfidresults->{(@{$res_sorted_key_overlap}[0])}->{'overlap'} = 1;
+				#$rfidresults->{(@{$res_sorted_key_overlap}[0])}->{'overlap'} = 1;
 			}
 			 
 		##
