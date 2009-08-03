@@ -12,10 +12,9 @@ use warnings;
 use Data::Dumper;
 use Date::Calc qw(:all);
 
-use lib 'lib';
-use lib::DBHandler;
-use lib::XMLPaths;
-use lib::DBTables;
+use DBHandler;
+use XMLPaths;
+use DBTables;
 
 ##############################################################################
 ##
@@ -74,10 +73,11 @@ my $MEETINGS_TO_DB 	= $DBH->prepare(qq{INSERT INTO `$TABLE_MEETINGS`(`box`,`rfid
 ##
 # get all rfid and boxes data
 $RFIDS = $DBH->selectall_hashref("SELECT id FROM rfid", 'id');
-$BOXES = $DBH->selectcol_arrayref("SELECT id FROM $TABLE_BOX");
+$BOXES = $DBH->selectcol_arrayref("SELECT DISTINCT(box) FROM $TABLE_RES");
 
 #print " => \$RFIDS: " . Dumper($RFIDS) ."\n";
 #print " => \$BOXES: " . Dumper($BOXES) ."\n";
+#exit;
 ##
 # Loop through boxes
 my @RESULT_IDS_SEARCHED = ();
@@ -188,9 +188,9 @@ print"\n================================================\n";
 
 $DBH->disconnect();
 
-my @args = ( "/usr/bin/perl -I$SCRIPT_PATH " . $SCRIPT_PATH."counter.pl");
-system(@args) == 0 	
-	or die "system @args failed: $?";
+#my @args = ( "/usr/bin/perl -I" . $SCRIPT_PATH . "lib ". $SCRIPT_PATH . "counter.pl");
+#system(@args) == 0 	
+#	or die "system @args failed: $?";
 exit;
 
 ##############################################################################
@@ -213,11 +213,6 @@ sub search_meetings {
 	
 	my $result_data = $rfids_results->{$rfid}->{$result_id};
 	
-	#print "search_meetings => \$rfid_res_id: " . Dumper($rfid_res_id) ."\n";
-	#print "search_meetings => \$box_in_rfid: " . Dumper($box_in_rfid) ."\n";
-	#print "search_meetings => \$box_out_rfid: " . Dumper($box_out_rfid) ."\n";
-	
-	
 	##
 	# looping over rfids to check against (rfid_check)
 	for my $rfid_check ( keys %$rfids_results) {
@@ -237,10 +232,6 @@ sub search_meetings {
 			my $box_out_rfid_check 	= $rfid_results->{$result_check_id}->{'box_out'}; 
 			
 			my $result_check_data = $rfid_results->{$result_check_id};
-			
-			#print "search_meetings => \$box_in_rfid_check: " . Dumper($box_in_rfid_check) ."\n";
-			#print "search_meetings => \$box_out_rfid_check: " . Dumper($box_out_rfid_check) ."\n";
-
 			
 			##
 			# check for cases we have always two datasets to check against each other ds1, ds2.
@@ -267,10 +258,6 @@ sub search_meetings {
 			if( $box_in_rfid <= $box_in_rfid_check && $box_out_rfid >= $box_out_rfid_check ) {
 			
 				my $assoc_res = &add_meeting_res($box_in_rfid_check, $box_out_rfid_check);
-				#print"ds2 is in the range of ds1:\t" . Dumper($assoc_res) . "\n";
-				#print "\$result_data: " . Dumper($result_data) ."\n";
-				#print "\$result_check_data: " . Dumper($result_check_data) ."\n";
-				#exit;
 				$assoc_res->{'typ'} = 1;
 				$meetings_for_rfid->{$result_check_id} = $assoc_res;
 				next;
@@ -281,10 +268,6 @@ sub search_meetings {
 			elsif( $box_in_rfid > $box_in_rfid_check && $box_out_rfid < $box_out_rfid_check ) {
 
 				my $assoc_res = &add_meeting_res($box_in_rfid, $box_out_rfid);
-				#print"ds1 is in the range of ds2:\t" . Dumper($assoc_res) . "\n";
-				#print "\$result_data: " . Dumper($result_data) ."\n";
-				#print "\$result_check_data: " . Dumper($result_check_data) ."\n";				
-				#exit;
 				$assoc_res->{'typ'} = 2;
 				$meetings_for_rfid->{$result_check_id} = $assoc_res;
 				next;
@@ -295,11 +278,6 @@ sub search_meetings {
 			elsif( $box_in_rfid > $box_in_rfid_check && $box_in_rfid < $box_out_rfid_check && $box_out_rfid > $box_out_rfid_check ) {
 			
 				my $assoc_res = &add_meeting_res($box_in_rfid, $box_out_rfid_check);
-				#print"ds1 entered after ds2 and ds2 left while ds1 was still in the box:\t" . Dumper($assoc_res) . "\n";
-				#print "\$result_data: " . Dumper($result_data) ."\n";
-				#print "\$result_check_data: " . Dumper($result_check_data) ."\n";				
-				#exit;
-				
 				$assoc_res->{'typ'} = 3;
 				$meetings_for_rfid->{$result_check_id} = $assoc_res;
 				next;
@@ -310,10 +288,6 @@ sub search_meetings {
 			elsif( $box_in_rfid < $box_out_rfid_check && $box_out_rfid > $box_in_rfid_check && $box_out_rfid < $box_out_rfid_check ) {
 			
 				my $assoc_res = &add_meeting_res($box_in_rfid_check, $box_out_rfid);
-				#print"ds2 entered after ds1 and ds1 left while ds2 was still in the box:\t" . Dumper($assoc_res) . "\n";
-				#print "\$result_data: " . Dumper($result_data) ."\n";
-				#print "\$result_check_data: " . Dumper($result_check_data) ."\n";				
-				#exit;
 				$assoc_res->{'typ'} = 4;
 				$meetings_for_rfid->{$result_check_id} = $assoc_res;
 			}

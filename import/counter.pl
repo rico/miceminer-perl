@@ -14,10 +14,9 @@
 ##############################################################################
 use strict;
 
-use lib 'lib';
-use lib::DBHandler;
-use lib::XMLPaths;
-use lib::DBTables;
+use DBHandler;
+use XMLPaths;
+use DBTables;
 use IO::File;
 use Data::Dumper;
 use Getopt::Long;
@@ -394,7 +393,7 @@ $DBH->disconnect();
 # my @args = ( $SCRIPT_PATH."dbsync.pl");
 # system(@args) == 0
 # 	or die "system @args failed: $?";
-# exit;
+exit;
 
 ##############################################################################
 # SUBS

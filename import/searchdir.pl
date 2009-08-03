@@ -16,10 +16,9 @@ use Fcntl;
 use Date::Calc qw(:all);
 use Data::Dumper;
 
-use lib 'lib';
-use lib::DBHandler;
-use lib::XMLPaths;
-use lib::DBTables;
+use DBHandler;
+use XMLPaths;
+use DBTables;
 
 ##############################################################################
 ##
@@ -165,7 +164,7 @@ foreach my $rfid (@RFIDS) {    # search each rfid
 	  or die( "Could not clear Table $TABLE_RFIDS: " . $DBH->errstr );
 	##
 	# uncomment next line to test only one rfid
-	exit;
+	#exit;
 }
 #########################################################
 # Ending
@@ -192,9 +191,9 @@ print"\n================================================\n";
 
 ##
 # continue
-#my @args = ( $SCRIPT_PATH . "searchres.pl" );
-#system(@args) == 0
-#  or die "system @args failed: $?";
+my @args = ( "/usr/bin/perl -I" . $SCRIPT_PATH . "lib ". $SCRIPT_PATH . "searchres.pl");
+system(@args) == 0
+  or die "system @args failed: $?";
 exit;
 ##############################################################
 # SUBS

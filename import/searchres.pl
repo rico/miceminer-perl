@@ -16,10 +16,9 @@ use Date::Calc qw(Delta_YMDHMS);
 use DateTime::Format::Strptime;
 use Data::Dumper;
 
-use lib 'lib';
-use lib::DBHandler;
-use lib::XMLPaths;
-use lib::DBTables;
+use DBHandler;
+use XMLPaths;
+use DBTables;
 
 ##
 # Global variables
@@ -52,11 +51,14 @@ my @RFIDRESSORTEDSK = ();
 
 # some counters
 my $DATACOUNT = 0; # number of (in) datasets
-my $RESCOUNT = 0; # number if results  
+my $RESCOUNT = 0; # number of results  
+my $NERVOUS_RESULTS = 0; # number of nervous results  
 my $DIRRESCOUNT = 0; # number of direction result 
 my $DATARESCOUNT = 0; # number of data results 
 my $NORESCOUNT	= 0; # number of in datasets for which no resuult could be found
 my $OVERLAPS = 0; # number of overlaps 
+my $STAY_OVERLAPS = 0; # number of stay result overlaps 
+my $DATA_OVERLAPS = 0; # number of dataset overlaps 
 my $RFIDCOUNT 	= 0; # number of rfids
 
 #my $BOX_OUT;		# store the time from which we continue to search
@@ -67,14 +69,14 @@ my $PRINTFSEP = "-----------+------+---------------------+---------------------+
 ####################################
 # PREAMBLE
 ####################################
-print"\n================================================\n";
+print"\n================================================================================================\n";
 print "STARTING SEARCHRES.PL\n\n";
 print "Symbols:\n";
 print "\t+ => direction result (1-3) -> (3-1)\n";
 print "\t& => data result (1-3) -> (1)\n";
 print "\t- => no result\n";
 print "\to => overlap (no result)\n";
-print"\n================================================\n";
+print"\n================================================================================================\n";
 
 ################################
 # set up results file
@@ -172,8 +174,7 @@ foreach my $rfid (@RFIDS) {
 	##
 	# Get an array reference with the direction IN data for the rfid, the key is the time in the unix timestamp format
 	$RFIDDIRINDATA = SelArrayRef($RFIDDIRDATAINSTH, [qw{id rfid time unix_time box dir outerdataid innerdataid}], [$rfid, $max_time]);
-#	$RFIDDIRDATAINSTH->execute($rfid,$max_time);
-#	$RFIDDIRINDATA = $RFIDDIRDATAINSTH->fetchall_hashref('id');
+	
 	##
 	# Jump to next rfid if we have no IN data to search.
 	if(scalar keys(%$RFIDDIRINDATA) == 0) {
@@ -253,7 +254,6 @@ foreach my $rfid (@RFIDS) {
 			$rfidresults->{$toCheckId} = $result;
 		}
 		
-		
 		$check_id_count++;
 		(($check_id_count % 100) == 0) ? print ". [$check_id_count]\n\t" : print ".";
 		
@@ -280,31 +280,17 @@ foreach my $rfid (@RFIDS) {
 		$check_id_count++;
 		
 		##
-		# resolve the overlap conflict (mark the overlaps)
+		# Result overlapping found
 		if ( scalar (@$res_sorted_key_overlap)  >  0 ) {			
 			(($check_id_count % 100) == 0) ? print "+ [$check_id_count]\n\t" : print "+";
 			
 			##		
-			# case 1: The result in question overlaps many others.
-			#
-			# The chance of one `wrong` result (missed antenna reading) is
-			# higher the chance of multiple `false` readings building results together.
-			# So we mark the result (the one in question) which overlaps the other ones. 
-			if( scalar(@$res_sorted_key_overlap) > 1) {
-				$rfidresults->{ $res_sorted_key }->{'overlap'} = 1;
-				
-			##	
-			# case 2: The result in question overlaps just one other.
-			#
-			# We skip the reuslt we are working on and keep the other
-			#
-			} else {
-				$rfidresults->{ $res_sorted_key }->{'overlap'}	= 1;
-				#$rfidresults->{(@{$res_sorted_key_overlap}[0])}->{'overlap'} = 1;
-			}
+			# Mark result as overlap
+			$rfidresults->{ $res_sorted_key }->{'overlap'} = 1;
+			$STAY_OVERLAPS++;
 			 
 		##
-		# No result overlapping detectected	
+		# No result overlapping found
 		} else {
 			
 			##
@@ -323,10 +309,12 @@ foreach my $rfid (@RFIDS) {
 			 
 				if ( &checkNervousness($res_sorted_key, $rfidresults, $dataset_overlaps) ) {
 					(($check_id_count % 100) == 0) ? print "& [$check_id_count]\n\t" : print "&";
-					$rfidresults->{ $res_sorted_key }->{'nerv_index'} = scalar(keys %$dataset_overlaps);		
+					$rfidresults->{ $res_sorted_key }->{'nerv_index'} = scalar(keys %$dataset_overlaps);
+					$NERVOUS_RESULTS++;
 				} else {
 					(($check_id_count % 100) == 0) ? print "* [$check_id_count]\n\t" : print "*";
-					$rfidresults->{ $res_sorted_key }->{'overlap'} = 1;	
+					$rfidresults->{ $res_sorted_key }->{'overlap'} = 1;
+					$DATA_OVERLAPS++;
 				}
 				
 			# no dataset overlapping	
@@ -342,7 +330,7 @@ foreach my $rfid (@RFIDS) {
 	
 	##
 	# Writing results / no results do the database and update the datasets in the
-	# data and direction.
+	# data and direction tables.
 	# 	Meaning of i values:
 	#		1 => no result found
 	# 		3 => part of direction result
@@ -460,12 +448,12 @@ foreach my $rfid (@RFIDS) {
 $DBH->disconnect();
 
 my $summary = qq{
-================================================
+================================================================================================
 rfids:\t\t\t\t$RFIDCOUNT
-Datasets:\t\t\t$DATACOUNT
-Results (direction/data):\t$RESCOUNT ($DIRRESCOUNT/$DATARESCOUNT)
-No Results (overlaps):\t\t$NORESCOUNT ($OVERLAPS)
-================================================
+Direction in datasets:\t\t$DATACOUNT
+Results (direction/data [nervous]):\t$RESCOUNT ($DIRRESCOUNT/$DATARESCOUNT [$NERVOUS_RESULTS])
+No Results (overlaps [stay/data]):\t\t$NORESCOUNT ($OVERLAPS [$STAY_OVERLAPS / $DATA_OVERLAPS])
+================================================================================================
 };
 
 printf RES $summary;
@@ -473,13 +461,14 @@ close(RES);
 
 print $summary;
 
-print"\n================================================\n";
+print"\n================================================================================================\n";
 print"SEARCHRES.PL COMPLETE";
-print"\n================================================\n";
+print"\n================================================================================================\n";
 
-my @args = ( "/usr/bin/perl -I$SCRIPT_PATH " . $SCRIPT_PATH."meetings.pl");
+my @args = ( "/usr/bin/perl -I" . $SCRIPT_PATH . "lib ". $SCRIPT_PATH . "meetings.pl");
 system(@args) == 0 	
 	or die "system @args failed: $?";
+
 exit;
 
 	
@@ -650,9 +639,14 @@ sub InsertResult {
 	  or die( "Could not update $TABLE_DATA: " . $DBH->errstr );
 	  
 	##
-	# update the data table
-	$UPDATEDIRRESIDS->execute($res_id, $inId, $outId)
-	  or die( "Could not update $TABLE_DIR: " . $DBH->errstr );
+	# update the dir table
+	if($res->{'typ'} == 3) {
+		$UPDATEDIRRESIDS->execute($res_id, $inId, $outId)
+		  or die( "Could not update $TABLE_DIR: " . $DBH->errstr );
+	} else {
+		$UPDATEDIRRESIDS->execute($res_id, $inId, $inId)
+		  or die( "Could not update $TABLE_DIR: " . $DBH->errstr );
+	}
 	  		
 	##
 	# return a result entry for the log File

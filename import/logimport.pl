@@ -19,10 +19,9 @@ use Date::Calc qw(:all);
 use File::stat;
 use IO::File;
 
-use lib 'lib';
-use lib::DBHandler;
-use lib::XMLPaths;
-use lib::DBTables;
+use DBHandler;
+use XMLPaths;
+use DBTables;
 
 # VARIABLES
 my @ARGS;
@@ -239,7 +238,7 @@ print"\n================================================\n";
 
 	
 # continue with analyzing data for direction pairs
-my @args = ( "/usr/bin/perl -I$SCRIPT_PATH " . $SCRIPT_PATH."searchdir.pl");
+my @args = ( "/usr/bin/perl -I" . $SCRIPT_PATH . "lib ". $SCRIPT_PATH . "searchdir.pl");
 system(@args) == 0 	
 	or die "system @args failed: $?";
 exit;
@@ -292,7 +291,7 @@ exit;
 	# preparing mysql insert
 	my $sth = $DBH->prepare("INSERT INTO `$TABLE_DATA` (time, millisec, ant, rfid, import) VALUES(?,?,?,?,?)")
 		or die("Could not prepare insert statement: " . $DBH->errstr);
-	my $sthRfid = $DBH->prepare("INSERT INTO $TABLE_RFIDS (id,i) VALUES(?, 0)")
+	my $sthRfid = $DBH->prepare("INSERT INTO $TABLE_RFIDS (id,i) VALUES(?, 0) ON DUPLICATE KEY UPDATE i=0")
 		or die("Could not prepare update statement: " . $DBH->errstr);	
 
 	##
@@ -355,10 +354,11 @@ sub CheckImport {
 	my $checkSQL = qq{SELECT count(logfile) FROM $TABLE_LOGS WHERE logfile='$fileName'};
 	my $check = $DBH->selectrow_array($checkSQL,undef);
 	
-	if (($DBH->selectrow_array($checkSQL,undef)) == 1) { 	# remove the file from the data directory if it 
+	if (($DBH->selectrow_array($checkSQL,undef)) == 1) { 		# remove the file from the data directory if it 
 		@ARGS = ("rm", $DATA_PATH.$fileName);					# has already been imported
 		system(@ARGS) == 0 or die "system @ARGS failed: $?";
 		print"\nERROR: attempt to reimport  [$fileName ]. The file has been deleted from $DATA_PATH\n";
+		exit;
 		return 1;
 	} else {
 		return 0;
